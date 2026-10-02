@@ -1,0 +1,16 @@
+services:
+  navidrome:
+    image: deluan/navidrome:latest
+    # Usa las variables de usuario configuradas en el .env
+    user: "${PUID}:${PGID}" 
+    ports:
+      - "${PUERTO_NAVIDROME}:4533"
+    restart: unless-stopped
+    environment:
+      ND_SCANTIME: "1m"
+      ND_LOGLEVEL: "info"
+    volumes:
+      # Usa las rutas parametrizadas
+      - "${PATH_NAVIDROME_DATA}:/data"
+      - "${PATH_MUSICA}:/music:ro"
+
