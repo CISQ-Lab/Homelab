@@ -1,16 +1,37 @@
 services:
   navidrome:
     image: deluan/navidrome:latest
+    container_name: homelab-navidrome
     # Usa las variables de usuario configuradas en el .env
-    user: "${PUID}:${PGID}" 
+    user: "${PUID}:${PGID}"
     ports:
       - "${PUERTO_NAVIDROME}:4533"
     restart: unless-stopped
     environment:
       ND_SCANTIME: "1m"
       ND_LOGLEVEL: "info"
+    networks:
+      - nginx-network
     volumes:
       # Usa las rutas parametrizadas
       - "${PATH_NAVIDROME_DATA}:/data"
       - "${PATH_MUSICA}:/music:ro"
 
+  reverse_proxy:
+    image: nginx:latest
+    container_name: homelab-nginx
+    ports:
+      - 443:443
+      - 80:80
+    restart: always
+    networks:
+      - nginx-network
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - navidrome
+
+networks:
+  nginx-network:
+    external: true
+    name: "${GLOBAL_NETWORK}"

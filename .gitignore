@@ -5,6 +5,7 @@
 
 music
 navidrome
+nginx.conf
 
 # User-specific files
 *.rsuser
